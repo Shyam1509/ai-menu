@@ -11,13 +11,14 @@ const AdminLogin = () => {
 
   const handleLogin = async () => {
     try {
-        await axios.post(`${process.env.BACKEND_URL}/auth/login`, {
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/admin/login`, {
             username,
             password,
         })
-
+        console.log('successfull');
+        
         localStorage.setItem("isLoggedIn", "true");
-        navigate("/admin")
+        navigate("/admin/dashboard")
 
     } catch (error) {
         alert("Invalid credential")
