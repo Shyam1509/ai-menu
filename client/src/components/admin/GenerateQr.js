@@ -1,6 +1,13 @@
 import React, { useState, useRef } from "react";
-import { TextField, Button, Box, Container, Typography, Paper } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import {
+  TextField,
+  Button,
+  Box,
+  Container,
+  Typography,
+  Paper,
+} from "@mui/material";
+// import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { QRCodeCanvas } from "qrcode.react";
 
@@ -12,20 +19,30 @@ const GenerateQr = () => {
 
   const handleGenerate = async () => {
     try {
-      const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/admin/generate-qr`, {
-        tableId,
-        tableName: tableName || `Table ${tableId}`,
-      });
+      const res = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/admin/generate-qr`,
+        {
+          tableId,
+          tableName: tableName || `Table ${tableId}`,
+        }
+      );
 
       setQrUrl(res.data.qrUrl);
     } catch (error) {
-      alert("Something went wrong");
+      if (error.response && error.response.status === 409) {
+        alert("🚫 Table ID already exists. Please choose a different one.");
+      } else {
+        alert("❌ Something went wrong while generating QR.");
+        console.error(error);
+      }
     }
   };
 
   const handleDownload = () => {
     const canvas = qrRef.current.querySelector("canvas");
-    const pngUrl = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+    const pngUrl = canvas
+      .toDataURL("image/png")
+      .replace("image/png", "image/octet-stream");
     const downloadLink = document.createElement("a");
     downloadLink.href = pngUrl;
     downloadLink.download = `QR_${tableId}.png`;
@@ -65,16 +82,11 @@ const GenerateQr = () => {
 
         {qrUrl && (
           <Box textAlign="center" mt={4} ref={qrRef}>
-            <Typography variant="subtitle1">Scan to Order:</Typography>
             <QRCodeCanvas value={qrUrl} size={200} />
             <Typography variant="caption" display="block" mt={1}>
               {qrUrl}
             </Typography>
-            <Button
-              variant="outlined"
-              sx={{ mt: 2 }}
-              onClick={handleDownload}
-            >
+            <Button variant="outlined" sx={{ mt: 2 }} onClick={handleDownload}>
               Download QR Code
             </Button>
           </Box>

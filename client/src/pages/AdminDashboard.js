@@ -14,6 +14,7 @@ import {
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import QrCodeIcon from "@mui/icons-material/QrCode";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 
 const drawerWidth = 240;
@@ -92,6 +93,24 @@ const AdminLayout = () => {
           >
             <ListItemIcon><ShoppingCartIcon /></ListItemIcon>
             <ListItemText primary="Orders" />
+          </ListItem>
+
+          <ListItem
+            button
+            selected={location.pathname === "/admin/menu"}
+            onClick={() => handleNav("menu")}
+            sx={{
+              "&.Mui-selected": {
+                backgroundColor: "#2e7d32",
+                color: "#fff",
+                "& .MuiListItemIcon-root": {
+                  color: "#fff",
+                },
+              },
+            }}
+          >
+            <ListItemIcon><RestaurantMenuIcon /></ListItemIcon>
+            <ListItemText primary="Menu" />
           </ListItem>
 
           <ListItem
